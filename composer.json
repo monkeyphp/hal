@@ -1,4 +1,16 @@
 {
+    "name"        : "monkeyphp/hal",
+    "type"        : "library",
+    "description" : "Hal library",
+    "keywords"    : ["hal"],
+    "license"     : "GPL", 
+    "authors"     : [
+        {
+            "name":  "David White",
+            "email": "david@monkeyphp.com",
+            "role":  "Developer"
+        }
+    ],
     "require-dev": {
         "phpspec/phpspec" : "2.0.*@dev"
     },
