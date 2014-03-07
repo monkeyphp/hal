@@ -32,6 +32,16 @@ class LinkFilter extends InputFilter
             ->add($this->getHreflangInput());
     }
 
+    /**
+     * Return the Input instance for the rel value
+     *
+     * ```rel``` is expected to be a string but may also be a url
+     *
+     * @link http://microformats.org/wiki/existing-rel-values
+     * @link http://www.iana.org/assignments/link-relations/link-relations.xhtml
+     *
+     * @return Input
+     */
     protected function getRelInput()
     {
         $rel = new Input('rel');
@@ -40,6 +50,23 @@ class LinkFilter extends InputFilter
         return $rel;
     }
 
+    /**
+     * Return the Input instance for the href value
+     *
+     * ```href``` should be a valid url (relative or absolute)
+     *
+     * The "href" property is REQUIRED.
+     * Its value is either a URI [RFC3986] or a URI Template [RFC6570].
+     *
+     * If the value is a URI Template then the Link Object SHOULD have a
+     * "templated" attribute whose value is true.
+     *
+     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.1
+     * @link http://tools.ietf.org/html/rfc3986
+     * @link http://tools.ietf.org/html/rfc6570
+     *
+     * @return Input
+     */
     protected function getHrefInput()
     {
         $href = new Input('href');
@@ -48,6 +75,13 @@ class LinkFilter extends InputFilter
         return $href;
     }
 
+    /**
+     * Return the Input instance used for the templated value
+     *
+     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.2
+     *
+     * @return Input
+     */
     protected function getTemplatedInput()
     {
         $templated = new Input('templated');
@@ -56,6 +90,11 @@ class LinkFilter extends InputFilter
         return $templated;
     }
 
+    /**
+     * Return the Input instance used for the type value
+     *
+     * @return Input
+     */
     protected function getTypeInput()
     {
         $type = new Input('type');

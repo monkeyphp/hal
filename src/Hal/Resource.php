@@ -46,24 +46,6 @@ class Resource
     const EMBEDDED_KEY = '_embedded';
 
     /**
-     * The name to use in the HAL output for the self url
-     *
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-8.1
-     *
-     * @var string
-     */
-    const SELF_KEY = 'self';
-
-    /**
-     * The name to use in the HAL output for the href
-     *
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.1
-     *
-     * @var string
-     */
-    const HREF_KEY = 'href';
-
-    /**
      * The Link that represents the self link the the HAL payload
      *
      * @var Link
@@ -102,15 +84,22 @@ class Resource
     /**
      * Constructor
      *
-     * @param Link   $self The Link containing the self location
-     * @param string $type The type of the resource
+     * @param Link                     $self       The Link containing the self location
+     * @param string                   $type       The type of the resource
+     * @param LinkCollection|array     $links      A collection of Link instances
+     * @param ResourceCollection|array $embedded   A collection of embedded resources
+     * @param array                    $attributes A collection of attributes
      *
      * @return void
      */
-    public function __construct(Link $self, $type)
+    public function __construct(Link $self, $type, $links = array(), $embedded = array(), $attributes = array())
     {
         $this->setSelf($self);
         $this->setType($type);
+        $this->setLinks($links);
+        $this->setEmbedded($embedded);
+        $this->setAttributes($attributes);
+
     }
 
     /**
@@ -134,19 +123,6 @@ class Resource
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Add a Link to this Resource
-     *
-     * @param Link $link The Link to add
-     *
-     * @return Resource
-     */
-    public function addLink(Link $link)
-    {
-        $this->getLinks()->addLink($link);
-        return $this;
     }
 
     /**
@@ -185,6 +161,36 @@ class Resource
         return $this->links;
     }
 
+    protected function setLinks($links = array())
+    {
+        if ($links instanceof LinkCollection) {
+            $this->links = $links;
+            return $this;
+        }
+
+        if (is_array($links) || $links instanceof Traversable) {
+            foreach ($links as $link) {
+                if ($link instanceof Link) {
+                    $this->addLink($link);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Add a Link to this Resource
+     *
+     * @param Link $link The Link to add
+     *
+     * @return Resource
+     */
+    public function addLink(Link $link)
+    {
+        $this->getLinks()->addLink($link);
+        return $this;
+    }
+
     /**
      * Return a HAL compatible array
      *
@@ -194,10 +200,7 @@ class Resource
     {
         $hal = $links = $embedded = array();
 
-        $links = $this->getSelf()->toArray();
-
-        $links = array_merge($links, $this->getLinks()->toArray());
-
+        $links = array_merge($this->getSelf()->toArray(), $this->getLinks()->toArray());
         $embedded = $this->getEmbedded()->toArray();
 
         if (! empty($links)) {
@@ -207,22 +210,46 @@ class Resource
             $hal[self::EMBEDDED_KEY] = $embedded;
         }
 
-        $hal = array_merge($hal, $this->attributes);
-
-        return $hal;
+        return array_merge($hal, $this->attributes);
     }
 
     /**
      * Add an embedded Resource
      *
-     * @param Resource $resource The Resource to add
-     * @param string   $group    The Resource group
+     * @param Resource|array $resources The Resource to add
+     * @param string         $group     The Resource group
      *
      * @return Resource
      */
-    public function addEmbedded(Resource $resource, $group)
+    public function addEmbedded($resources, $group)
     {
-        $this->getEmbedded()->addResource($resource, $group);
+        if ($resources instanceof Resource) {
+            $this->getEmbedded()->addResource($resources, $group);
+        }
+
+        if (is_array($resources) || $resources instanceof Traversable) {
+            foreach ($resources as $resource) {
+                if ($resource instanceof Resource) {
+                    $this->getEmbedded()->addResource($resource, $group);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    protected function setEmbedded($embedded = array())
+    {
+        if ($embedded instanceof ResourceCollection) {
+            $this->embedded = $embedded;
+            return $this;
+        }
+
+        if (is_array($embedded) || $embedded instanceof Traversable) {
+            foreach ($embedded as $group => $resources) {
+                $this->addEmbedded($resources, $group);
+            }
+        }
         return $this;
     }
 
@@ -267,6 +294,22 @@ class Resource
                 $this->addAttribute($name, $value);
             }
         }
+        return $this;
+    }
+
+    /**
+     * Set the array of attributes
+     *
+     * This method will clear any previously set attributes
+     *
+     * @param array $attributes An array of attributes
+     *
+     * @return Resource
+     */
+    protected function setAttributes($attributes = array())
+    {
+        $this->attributes = array();
+        $this->addAttributes($attributes);
         return $this;
     }
 }

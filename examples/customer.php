@@ -1,25 +1,34 @@
 <?php
-require_once 'vendor/autoload.php';
+require_once './../vendor/autoload.php';
 
 use Hal\Link;
 use Hal\Resource;
 
-$self = new Link('/customer/123');
-$orders = new Link('/customer/123/orders', 'orders');
-$payments = new Link('/customer/123/payments', 'payments');
+// create the top level resource
+$resource = new Resource(new Link('self', '/customer/123'), 'customer');
 
+// add some attributes to the resource
+$resource->addAttributes(array(
+    'firstname' => 'David',
+    'lastname' => 'White',
+    'age' => 32
+));
 
-$hal = new Resource($self, 'customer');
-$hal->addLink($orders);
-$hal->addLink($payments);
+// add some embedded resources
+$address = new Resource(new Link('self', '/address/23987'), 'address');
+$address->addAttributes(array(
+    'street' => 'A Road',
+    'town' => 'Harrogate',
+    'county' => 'North Yorkshire'
+));
+$resource->addEmbedded($address, 'addresses');
 
-$hal->addAttribute('name', 'Hulk');
-$hal->addAttribute('age', 30);
+// add some links
+$orders = new Link('orders', '/customer/123/orders');
+$payments = new Link('payments', '/customer/123/payments');
 
-$address = new Resource(new Link('/address/456'), 'address');
-$address->addAttribute('street', 'Albert Road');
-$address->addAttribute('town', 'Harrogate');
+$resource->addLink($orders);
+$resource->addLink($payments);
 
-$hal->addEmbedded($address, 'addresses');
-
-print_r($hal->toArray());
+// print out the resulting array
+print_r($resource->toArray());
