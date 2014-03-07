@@ -23,7 +23,7 @@ class ResourceCollectionSpec extends ObjectBehavior
         $resourceTwo = new Resource(new Link('self', $uriTwo), $type);
 
         $hal = array(
-            $type => array(
+            $group => array(
                 array(
                     '_links' => array(
                         'self' => array(
@@ -40,7 +40,9 @@ class ResourceCollectionSpec extends ObjectBehavior
                 )
             )
         );
-        $this->addResource($resourceOne, 'others');
-        $this->addResource($resourceTwo, 'others');
+        $this->addResource($resourceOne, $group);
+        $this->addResource($resourceTwo, $group);
+
+        $this->toArray()->shouldReturn($hal);
     }
 }
