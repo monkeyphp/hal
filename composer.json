@@ -18,7 +18,9 @@
         "zendframework/zend-servicemanager": "2.2.6"
     },
     "require-dev": {
-        "phpspec/phpspec" : "2.0.*@dev"
+        "phpspec/phpspec" : "2.0.*@dev",
+        "zendframework/zend-config": "2.2.6",
+        "zendframework/zend-json": "2.2.6"
     },
     "autoload" : {
         "psr-0" : {

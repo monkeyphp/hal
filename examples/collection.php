@@ -28,4 +28,8 @@ $resource = new Resource(
 );
 
 
-print_r($resource->toArray());
+$array = $resource->toArray();
+
+$writer = new Zend\Config\Writer\Json();
+
+echo $writer->toString($array);
