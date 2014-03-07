@@ -7,26 +7,43 @@ use Prophecy\Argument;
 
 class LinkSpec extends ObjectBehavior
 {
-    public function it_returns_uri()
+    public function it_returns_hal_array()
     {
-        $uri = '/users?page=2';
-        $this->beConstructedWith($uri);
+        $rel = 'self';
+        $href = '/example';
+        $templated = true;
+        $type = 'application/pdf';
+        $deprecation = '/deprecation.html';
+        $profile = 'some-kind of_string';
+        $title = 'a title';
+        $hreflang = 'ahreflang';
 
-        $this->getUri()->shouldReturn($uri);
+        $this->beConstructedWith(
+            $rel,
+            $href,
+            array(
+                'templated' => $templated,
+                'type' => $type,
+                'deprecation' => $deprecation,
+                'profile' => $profile,
+                'title' => $title,
+                'hreflang' => $hreflang
+            )
+        );
+
+        $hal = array(
+            $rel => array(
+                'href' => $href,
+                'templated' => true,
+                'type' => $type,
+                'deprecation' => $deprecation,
+                'profile' => $profile,
+                'title' => $title,
+                'hreflang' => $hreflang,
+            )
+        );
+
+        $this->toArray()->shouldReturn($hal);
     }
 
-    public function it_returns_name_when_set()
-    {
-        $name = 'next';
-        $this->beConstructedWith('/users?page=1', $name);
-
-        $this->getName()->shouldReturn($name);
-    }
-
-    public function it_returns_null_when_name_not_set()
-    {
-        $this->beConstructedWith('/users?page=2');
-
-        $this->getName()->shouldReturn(null);
-    }
 }

@@ -194,9 +194,7 @@ class Resource
     {
         $hal = $links = $embedded = array();
 
-        $links[self::SELF_KEY] = array(
-            self::HREF_KEY => $this->getSelf()->getUri()
-        );
+        $links = $this->getSelf()->toArray();
 
         $links = array_merge($links, $this->getLinks()->toArray());
 

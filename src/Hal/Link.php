@@ -8,10 +8,14 @@
  */
 namespace Hal;
 
+use Exception;
+
 /**
  * Link
  *
  * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5
+ * @link http://www.iana.org/assignments/link-relations/link-relations.xhtml
+ * @link http://microformats.org/wiki/existing-rel-values
  *
  * @category Hal
  * @package  Hal
@@ -19,83 +23,67 @@ namespace Hal;
 class Link
 {
     /**
-     * Required
+     * Instance of LinkFilter used for validating and filtering the
+     * supplied parameters
      *
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.1
-     *
-     * @var string
+     * @var LinkFilter
      */
-    protected $href;
+    protected $linkFilter;
 
     /**
-     * Optional
+     * An array of filtered values
      *
-     * http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.2
-     *
-     * @var boolean|null
+     * @var array
      */
-    protected $templated = false;
+    protected $values;
 
     /**
-     * Optional
+     * Constructor
      *
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.3
+     * @param string $rel     The relationship
+     * @param string $href    The uri/href
+     * @param array  $options An array of optional values
      *
-     * @var string|null
+     * @return void
      */
-    protected $type;
-
-    /**
-     * Optional
-     *
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.4
-     *
-     * @var string|null
-     */
-    protected $deprecation;
-
-    /**
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.5
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.6
-     *
-     * @var string|null
-     */
-    protected $profile;
-
-    /**
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.7
-     *
-     * @var string|null
-     */
-    protected $title;
-
-    /**
-     * @link http://tools.ietf.org/html/draft-kelly-json-hal-06#section-5.8
-     *
-     * @var string
-     */
-    protected $hreflang;
-
-
-    public function __construct($uri, $name = null)
+    public function __construct($rel, $href, $options = array())
     {
-        $this->href = $uri;
-        $this->name = $name;
+        $options = ($options + array('rel' => $rel, 'href' => $href));
+
+        $linkFilter = $this->getLinkFilter();
+        $linkFilter->setData($options);
+
+        if (! $linkFilter->isValid()) {
+            throw new Exception('Invalid data supplied');
+        }
+
+        $this->values = array_filter($linkFilter->getValues(), 'strlen');
     }
 
-    public function getName()
+    /**
+     * Return an array representation of the Hal link
+     *
+     * @return array
+     */
+    public function toArray()
     {
-        return $this->name;
+        $values = $this->values;
+        $rel = $values['rel'];
+        unset($values['rel']);
+
+        return array($rel => $values);
     }
 
-    public function getUri()
+    /**
+     * Return an instance of LinkFilter
+     *
+     * @return LinkFilter
+     */
+    protected function getLinkFilter()
     {
-        return $this->href;
+        if (! isset($this->linkFilter)) {
+            $this->linkFilter = new LinkFilter();
+        }
+        return $this->linkFilter;
     }
 }

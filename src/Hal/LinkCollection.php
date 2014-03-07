@@ -40,7 +40,7 @@ class LinkCollection
 
     /**
      * Remove a Link from the Collection
-     * 
+     *
      * @param Link $link
      *
      * @return boolean
@@ -64,19 +64,17 @@ class LinkCollection
         $hal = array();
 
         foreach ($this->getLinks() as $link) {
-            $name = $link->getName();
+            $array = $link->toArray();
 
-            if (! $name || $name === 'self') {
-                continue;
+            $key = key($array);
+            $current = current($array);
+
+            if (! isset($hal[$key])) {
+                $hal[$key] = array();
             }
 
-            if (! isset($hal[$name])) {
-                $hal[$name] = array();
-            }
+            $hal[$key][] = $current;
 
-            $hal[$name][] = array(
-                'href' => $link->getUri()
-            );
         }
         return $hal;
     }

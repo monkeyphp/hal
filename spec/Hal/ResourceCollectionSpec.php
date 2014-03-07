@@ -19,8 +19,8 @@ class ResourceCollectionSpec extends ObjectBehavior
         $uriTwo = '/embedded-resource/2';
         $type = 'other';
         $group = 'others';
-        $resourceOne = new Resource(new Link($uriOne), $type);
-        $resourceTwo = new Resource(new Link($uriTwo), $type);
+        $resourceOne = new Resource(new Link('self', $uriOne), $type);
+        $resourceTwo = new Resource(new Link('self', $uriTwo), $type);
 
         $hal = array(
             $type => array(
@@ -40,11 +40,7 @@ class ResourceCollectionSpec extends ObjectBehavior
                 )
             )
         );
-
-        // print_r($hal);
         $this->addResource($resourceOne, 'others');
         $this->addResource($resourceTwo, 'others');
-
-        //$this->toArray()->shouldReturn($hal);
     }
 }

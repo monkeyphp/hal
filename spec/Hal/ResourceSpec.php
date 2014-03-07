@@ -11,7 +11,7 @@ class ResourceSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $type = 'person';
-        $this->beConstructedWith(new Link('\me'), $type);
+        $this->beConstructedWith(new Link('self', '/me'), $type);
 
         $this->shouldHaveType('Hal\Resource');
     }
@@ -19,25 +19,25 @@ class ResourceSpec extends ObjectBehavior
     function it_returns_this_when_link_added()
     {
         $type = 'person';
-        $this->beConstructedWith(new Link('\me'), $type);
+        $this->beConstructedWith(new Link('self', '/me'), $type);
 
-        $link = new Link('\other', 'next');
+        $link = new Link('/other', 'next');
 
         $this->addLink($link)->shouldReturn($this);
     }
 
     function it_returns_this_when_resource_added()
     {
-        $embedded = new Resource(new Link('\orders\1'), 'order');
+        $embedded = new Resource(new Link('order', 'orders/1'), 'order');
 
-        $this->beConstructedWith(new Link('\customer\123'), 'customer');
+        $this->beConstructedWith(new Link('self', '/customer/123'), 'customer');
 
         $this->addEmbedded($embedded, 'orders')->shouldReturn($this);
     }
 
     function it_returns_this_when_attribute_added()
     {
-        $this->beConstructedWith(new Link('\customer\123'), 'customer');
+        $this->beConstructedWith(new Link('self', '/customer/123'), 'customer');
 
         $this->addAttribute('name', 'David')->shouldReturn($this);
     }
@@ -51,7 +51,7 @@ class ResourceSpec extends ObjectBehavior
 
         $type = 'order';
         $firstEmbeddedUri = '/order/1';
-        $firstEmbedded = new Resource(new Link($firstEmbeddedUri), $type);
+        $firstEmbedded = new Resource(new Link('self', $firstEmbeddedUri), $type);
 
         $myName = 'The Hulk';
         $myAge = 30;
@@ -82,8 +82,8 @@ class ResourceSpec extends ObjectBehavior
             'age' => $myAge,
         );
 
-        $this->beConstructedWith(new Link($selfUri), 'customer');
-        $this->addLink(new Link($otherUri, $name));
+        $this->beConstructedWith(new Link('self', $selfUri), 'customer');
+        $this->addLink(new Link($name, $otherUri));
         $this->addAttribute('name', $myName);
         $this->addAttribute('age', $myAge);
         $this->addEmbedded($firstEmbedded, 'orders');
