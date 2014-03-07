@@ -20,8 +20,11 @@ $resource = new Resource(
             new Resource(new Link('self', 'http://example.org/api/user/mac_nibblet'), 'user', null, null, array('id' => 'mac_nibblet', 'name' => 'Antoine Hedgecock')),
             new Resource(new Link('self', 'http://example.org/api/user/spiffyjr'), 'user', null, null, array('id' => 'spiffyjr', 'name' => 'Kyle Spraggs')),
         )
+    ),
+    array(
+        'count' => 3,
+        'total' => 498
     )
-
 );
 
 
