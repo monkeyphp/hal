@@ -62,9 +62,7 @@ class ResourceSpec extends ObjectBehavior
                     'href' => $selfUri
                 ),
                 $name => array(
-                    array(
-                        'href' => $otherUri
-                    ),
+                    'href' => $otherUri
                 ),
             ),
             '_embedded' => array(

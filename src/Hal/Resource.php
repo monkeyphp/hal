@@ -99,7 +99,6 @@ class Resource
         $this->setLinks($links);
         $this->setEmbedded($embedded);
         $this->setAttributes($attributes);
-
     }
 
     /**
@@ -234,7 +233,6 @@ class Resource
                 }
             }
         }
-
         return $this;
     }
 
