@@ -30,6 +30,5 @@ $resource = new Resource(
 
 $array = $resource->toArray();
 
-$writer = new Zend\Config\Writer\Json();
 
-echo $writer->toString($array);
+echo json_encode($array, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);

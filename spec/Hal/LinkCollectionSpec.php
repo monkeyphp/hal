@@ -23,35 +23,22 @@ class LinkCollectionSpec extends ObjectBehavior
         $this->addLink(new Link('profile', '/profile/123'));
         $this->addLink(new Link('profile', '/this-customer-123'));
 
-        $this->toArray();
+        $hal = array(
+            'basket' => array(
+                'href' => '/basket/280735',
+                'name' => 'Basket'
+            ),
+            'profile' => array(
+                array(
+                    'href' => '/profile/123'
+                ),
+                array(
+                    'href' => '/this-customer-123'
+                )
+            )
+        );
+
+        $this->toArray()->shouldReturn($hal);
     }
 
-//    function it_removes_link_and_returns_true()
-//    {
-//        $link = new Link('\example', 'foo');
-//        $this->addLink($link);
-//
-//        $this->removeLink($link)->shouldReturn(true);
-//
-//        $hal = array();
-//
-//        $this->toArray()->shouldReturn($hal);
-//    }
-
-//    function it_returns_hal_array_of_links()
-//    {
-//        $uri = '/example';
-//        $name = 'next';
-//        $link = new Link($uri, $name);
-//        $hal =
-//            array(
-//                $name => array(
-//                    array(
-//                        'href' => $uri
-//                    ),
-//                ),
-//
-//        );
-//        $this->addLink($link)->toArray()->shouldReturn($hal);
-//    }
 }

@@ -29,5 +29,6 @@ $resource->addAttributes(array(
     'country' => 'United Kingdom'
 ));
 
-print_r($resource->toArray());
+$array = $resource->toArray();
 
+echo json_encode($array, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);

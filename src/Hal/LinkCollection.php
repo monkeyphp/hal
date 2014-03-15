@@ -57,6 +57,10 @@ class LinkCollection
     /**
      * Return a HAL payload array
      *
+     * This method will loop through each link adding each to the links array.
+     * If there are multiple links with same ```rel``` value, they will be
+     * converted into an array.
+     *
      * @return array
      */
     public function toArray()
@@ -69,13 +73,13 @@ class LinkCollection
             $key = key($array);
             $current = current($array);
 
-            if (! isset($hal[$key])) {
-                $hal[$key] = array();
+            if (isset($hal[$key])) {
+                $hal[$key] = array($hal[$key], $current);
+                continue;
             }
-
-            $hal[$key][] = $current;
-
+            $hal[$key] = $current;
         }
+
         return $hal;
     }
 
