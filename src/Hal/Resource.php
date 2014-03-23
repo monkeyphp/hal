@@ -23,7 +23,7 @@ use Traversable;
  * @category Hal
  * @package  Hal
  */
-class Resource
+class Resource implements ResourceInterface
 {
     /**
      * The name to use in the HAL output for links
